@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { NEVER, of } from 'rxjs';
 import { EmployeesPage } from './employees-page';
 import { EmployeesService } from '../../api/employees.service';
+import { MetaService } from '../../api/meta.service';
 import { Employee } from '../../models/employee';
 
 const mockEmployee: Employee = {
@@ -23,9 +24,15 @@ const mockEmployee: Employee = {
 const mockResponse = (items = [mockEmployee], total = 1) =>
   of({ items, total, page: 1, page_size: 20 });
 
+// The filters load dropdown options; stub them so tests never hit the network.
+const metaStub = {
+  provide: MetaService,
+  useValue: { countries: () => of(['Canada']), departments: () => of(['Finance']) },
+};
+
 const renderPage = (list = jest.fn().mockReturnValue(mockResponse())) =>
   render(EmployeesPage, {
-    providers: [{ provide: EmployeesService, useValue: { list, remove: jest.fn() } }],
+    providers: [{ provide: EmployeesService, useValue: { list, remove: jest.fn() } }, metaStub],
   });
 
 describe('EmployeesPage', () => {
@@ -70,6 +77,7 @@ describe('EmployeesPage', () => {
     await render(EmployeesPage, {
       providers: [
         { provide: EmployeesService, useValue: { list: jest.fn().mockReturnValue(mockResponse()), remove } },
+        metaStub,
       ],
     });
 

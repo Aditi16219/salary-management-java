@@ -5,6 +5,7 @@ import { App } from './app';
 import { routes } from './app.routes';
 import { EmployeesService } from './api/employees.service';
 import { InsightsService } from './api/insights.service';
+import { MetaService } from './api/meta.service';
 
 // Pages load data on navigation; stub the API so these tests only exercise routing.
 const empty = () => of([]);
@@ -22,6 +23,7 @@ const providers = [
       headcountByCountry: empty,
     },
   },
+  { provide: MetaService, useValue: { countries: empty, departments: empty } },
 ];
 
 describe('App', () => {

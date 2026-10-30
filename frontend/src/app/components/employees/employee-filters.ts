@@ -1,5 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { LucideAngularModule, Search } from 'lucide-angular';
+import { catchError, of } from 'rxjs';
+import { MetaService } from '../../api/meta.service';
 
 @Component({
   selector: 'app-employee-filters',
@@ -20,25 +23,42 @@ import { LucideAngularModule, Search } from 'lucide-angular';
           class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <input
-        type="text"
-        placeholder="Filter by country"
-        [value]="country()"
-        (input)="countryChange.emit(valueOf($event))"
-        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        type="text"
-        placeholder="Filter by department"
-        [value]="department()"
-        (input)="departmentChange.emit(valueOf($event))"
-        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+
+      <select
+        aria-label="Country"
+        (change)="countryChange.emit(valueOf($event))"
+        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+      >
+        <option value="" [selected]="country() === ''">All Countries</option>
+        @for (c of countries(); track c) {
+          <option [value]="c" [selected]="c === country()">{{ c }}</option>
+        }
+      </select>
+
+      <select
+        aria-label="Department"
+        (change)="departmentChange.emit(valueOf($event))"
+        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+      >
+        <option value="" [selected]="department() === ''">All Departments</option>
+        @for (d of departments(); track d) {
+          <option [value]="d" [selected]="d === department()">{{ d }}</option>
+        }
+      </select>
     </div>
   `,
 })
 export class EmployeeFilters {
   protected readonly SearchIcon = Search;
+
+  private readonly meta = inject(MetaService);
+  // A failed lookup only empties the dropdown; it must not break the page.
+  protected readonly countries = toSignal(this.meta.countries().pipe(catchError(() => of([]))), {
+    initialValue: [],
+  });
+  protected readonly departments = toSignal(this.meta.departments().pipe(catchError(() => of([]))), {
+    initialValue: [],
+  });
 
   readonly search = input('');
   readonly country = input('');
@@ -49,6 +69,6 @@ export class EmployeeFilters {
   readonly departmentChange = output<string>();
 
   protected valueOf(event: Event): string {
-    return (event.target as HTMLInputElement).value;
+    return (event.target as HTMLInputElement | HTMLSelectElement).value;
   }
 }

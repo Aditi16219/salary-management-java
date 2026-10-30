@@ -45,4 +45,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
     List<DepartmentSummary> departmentSummary();
 
     List<Employee> findByActiveTrueOrderBySalaryDesc(Limit limit);
+
+    @Query("select distinct e.country from Employee e where e.active = true order by e.country")
+    List<String> distinctCountries();
+
+    @Query("select distinct e.department from Employee e where e.active = true order by e.department")
+    List<String> distinctDepartments();
 }
