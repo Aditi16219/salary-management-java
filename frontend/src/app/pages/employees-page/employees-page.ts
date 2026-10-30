@@ -19,16 +19,16 @@ const PAGE_SIZE = 20;
     <div>
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-indigo-900">Employees</h2>
+          <h2 class="text-2xl font-bold text-slate-900">Employees</h2>
           @if (!loading()) {
-            <p class="text-sm text-indigo-400 mt-1">
+            <p class="text-sm text-slate-500 mt-1">
               {{ total() | number }} total employee{{ total() !== 1 ? 's' : '' }}
             </p>
           }
         </div>
         <button
           (click)="router.navigate(['/employees/new'])"
-          class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+          class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors shadow-sm"
         >
           Add Employee
         </button>

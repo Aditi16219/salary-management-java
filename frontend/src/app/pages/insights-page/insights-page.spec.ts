@@ -15,6 +15,7 @@ const mockDeptSummary = [
 
 const mockTopEarners = [
   { id: '1', full_name: 'Alice Smith', job_title: 'Principal Engineer', country: 'USA', department: 'Engineering', salary: 200000 },
+  { id: '2', full_name: 'Bob Jones', job_title: 'Engineering Manager', country: 'UK', department: 'Engineering', salary: 190000 },
 ];
 
 const mockHeadcount = [
@@ -68,6 +69,17 @@ describe('InsightsPage', () => {
     await renderPage(service);
     expect(await screen.findByText('Alice Smith')).toBeInTheDocument();
     expect(service.topEarners).toHaveBeenCalledWith(10);
+  });
+
+  it('highlights only the #1 top earner', async () => {
+    await renderPage();
+    const first = (await screen.findByText('Alice Smith')).closest('tr');
+    const second = screen.getByText('Bob Jones').closest('tr');
+
+    expect(first).toHaveAttribute('data-top-earner', 'true');
+    expect(first).toHaveClass('bg-teal-50');
+    expect(second).not.toHaveAttribute('data-top-earner');
+    expect(second).not.toHaveClass('bg-teal-50');
   });
 
   it('summarises headcount, highest salary and top country', async () => {

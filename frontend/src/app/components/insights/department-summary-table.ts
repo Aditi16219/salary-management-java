@@ -7,18 +7,18 @@ import { formatSalary } from '../../utils/format';
   selector: 'app-department-summary-table',
   imports: [DecimalPipe],
   template: `
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div class="px-4 py-3 border-b border-blue-100 bg-blue-50">
-        <h3 class="font-semibold text-blue-800 text-sm">Department Summary</h3>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-4 py-3 border-b border-cyan-100 bg-cyan-50">
+        <h3 class="font-semibold text-cyan-800 text-sm">Department Summary</h3>
       </div>
       <table class="w-full text-sm">
         <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
-            <th class="px-4 py-2 font-semibold text-blue-600 text-xs uppercase tracking-wide text-left">Department</th>
-            <th class="px-4 py-2 font-semibold text-blue-600 text-xs uppercase tracking-wide text-left">Employees</th>
-            <th class="px-4 py-2 font-semibold text-blue-600 text-xs uppercase tracking-wide text-right">Avg Salary</th>
-            <th class="px-4 py-2 font-semibold text-blue-600 text-xs uppercase tracking-wide text-right">Min</th>
-            <th class="px-4 py-2 font-semibold text-blue-600 text-xs uppercase tracking-wide text-right">Max</th>
+            <th class="px-4 py-2 font-semibold text-cyan-600 text-xs uppercase tracking-wide text-left">Department</th>
+            <th class="px-4 py-2 font-semibold text-cyan-600 text-xs uppercase tracking-wide text-left">Employees</th>
+            <th class="px-4 py-2 font-semibold text-cyan-600 text-xs uppercase tracking-wide text-right">Avg Salary</th>
+            <th class="px-4 py-2 font-semibold text-cyan-600 text-xs uppercase tracking-wide text-right">Min</th>
+            <th class="px-4 py-2 font-semibold text-cyan-600 text-xs uppercase tracking-wide text-right">Max</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">

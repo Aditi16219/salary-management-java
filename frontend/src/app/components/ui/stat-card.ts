@@ -1,25 +1,25 @@
 import { Component, input } from '@angular/core';
 
-export type StatCardColor = 'indigo' | 'blue' | 'violet' | 'sky';
+export type StatCardColor = 'teal' | 'cyan' | 'emerald' | 'sky';
 
 const colorMap: Record<StatCardColor, string> = {
-  indigo: 'border-indigo-500 bg-indigo-50',
-  blue: 'border-blue-500 bg-blue-50',
-  violet: 'border-violet-500 bg-violet-50',
+  teal: 'border-teal-500 bg-teal-50',
+  cyan: 'border-cyan-500 bg-cyan-50',
+  emerald: 'border-emerald-500 bg-emerald-50',
   sky: 'border-sky-500 bg-sky-50',
 };
 
 const textMap: Record<StatCardColor, string> = {
-  indigo: 'text-indigo-700',
-  blue: 'text-blue-700',
-  violet: 'text-violet-700',
+  teal: 'text-teal-700',
+  cyan: 'text-cyan-700',
+  emerald: 'text-emerald-700',
   sky: 'text-sky-700',
 };
 
 @Component({
   selector: 'app-stat-card',
   template: `
-    <div class="rounded-lg border-l-4 p-4 shadow-sm" [class]="colorMap[color()]">
+    <div class="rounded-xl border-l-4 p-4 shadow-sm" [class]="colorMap[color()]">
       <p class="text-xs font-semibold uppercase tracking-wide" [class]="textMap[color()]">{{ label() }}</p>
       <p class="text-2xl font-bold text-gray-900 mt-1">{{ value() }}</p>
       @if (sub()) {
@@ -35,5 +35,5 @@ export class StatCard {
   readonly label = input.required<string>();
   readonly value = input.required<string | number>();
   readonly sub = input<string>();
-  readonly color = input<StatCardColor>('indigo');
+  readonly color = input<StatCardColor>('teal');
 }

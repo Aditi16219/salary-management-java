@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-slate-50">
-  <nav class="bg-indigo-900">
+  <nav class="bg-slate-900">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-indigo-400 rounded-lg flex items-center justify-center">
+        <div class="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
           <span class="text-white font-bold text-sm">SM</span>
         </div>
         <span class="text-xl font-bold text-white">Salary Management</span>
@@ -15,7 +15,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             #rla="routerLinkActive"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            [class]="rla.isActive ? 'bg-indigo-700 text-white' : 'text-indigo-200 hover:bg-indigo-800 hover:text-white'"
+            [class]="rla.isActive ? 'bg-teal-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'"
           >
             {{ item.label }}
           </a>

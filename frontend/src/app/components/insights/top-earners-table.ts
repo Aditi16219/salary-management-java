@@ -5,16 +5,16 @@ import { formatSalary } from '../../utils/format';
 @Component({
   selector: 'app-top-earners-table',
   template: `
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div class="px-4 py-3 border-b border-violet-100 bg-violet-50">
-        <h3 class="font-semibold text-violet-800 text-sm">Top Earners</h3>
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-4 py-3 border-b border-emerald-100 bg-emerald-50">
+        <h3 class="font-semibold text-emerald-800 text-sm">Top Earners</h3>
       </div>
       <table class="w-full text-sm">
         <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
             @for (h of headers; track h) {
               <th
-                class="px-4 py-2 font-semibold text-violet-600 text-xs uppercase tracking-wide"
+                class="px-4 py-2 font-semibold text-emerald-600 text-xs uppercase tracking-wide"
                 [class.text-right]="h === 'Salary'"
                 [class.text-left]="h !== 'Salary'"
               >
@@ -25,8 +25,11 @@ import { formatSalary } from '../../utils/format';
         </thead>
         <tbody class="divide-y divide-gray-50">
           @for (r of rows(); track r.id; let i = $index) {
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-2 text-gray-400 w-8">{{ i + 1 }}</td>
+            <tr
+              [class]="i === 0 ? 'bg-teal-50' : 'hover:bg-gray-50'"
+              [attr.data-top-earner]="i === 0 ? 'true' : null"
+            >
+              <td class="px-4 py-2 w-8" [class]="i === 0 ? 'text-teal-700 font-bold' : 'text-gray-400'">{{ i + 1 }}</td>
               <td class="px-4 py-2 font-medium text-gray-900">{{ r.full_name }}</td>
               <td class="px-4 py-2 text-gray-600">{{ r.job_title }}</td>
               <td class="px-4 py-2 text-gray-600">{{ r.department }}</td>

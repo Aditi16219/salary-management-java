@@ -24,14 +24,14 @@ const options = (source: Observable<string[]>) =>
           placeholder="Search by name, email, or job title..."
           [value]="search()"
           (input)="searchChange.emit(valueOf($event))"
-          class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400"
+          class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-400"
         />
       </div>
 
       <select
         aria-label="Country"
         (change)="countryChange.emit(valueOf($event))"
-        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-400 bg-white"
       >
         <option value="" [selected]="country() === ''">All Countries</option>
         @for (c of countries(); track c) {
@@ -42,7 +42,7 @@ const options = (source: Observable<string[]>) =>
       <select
         aria-label="Department"
         (change)="departmentChange.emit(valueOf($event))"
-        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-400 bg-white"
       >
         <option value="" [selected]="department() === ''">All Departments</option>
         @for (d of departments(); track d) {
@@ -53,7 +53,7 @@ const options = (source: Observable<string[]>) =>
       <select
         aria-label="Job Title"
         (change)="jobTitleChange.emit(valueOf($event))"
-        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-400 bg-white"
       >
         <option value="" [selected]="jobTitle() === ''">All Job Titles</option>
         @for (j of jobTitles(); track j) {

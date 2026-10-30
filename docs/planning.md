@@ -78,7 +78,7 @@ step, so the evolution of the solution is visible and comparable:
 Post-plan additions (based on testing the live app):
 - Country/department/job title dropdowns (from live DB, not hardcoded)
 - Server-side column sorting (salary, hire date)
-- Indigo/blue colour theme
+- Indigo/blue colour theme (later replaced by a teal/slate theme with initials avatars and a highlighted #1 top earner)
 - Email and hire date columns in table
 - "Avg salary by job title in a country" section added to Insights UI (the API endpoint existed from the insights commit; the dashboard section was added here, following the original project's sequence, where this gap was caught during a requirements review)
 - Seed folder auto-detection — the seed finds its name files from `backend/` (`../seed`), the repo root (`seed`) or Docker (`/seed`)

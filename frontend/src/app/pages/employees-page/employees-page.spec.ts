@@ -53,6 +53,12 @@ describe('EmployeesPage', () => {
     expect(await screen.findByText('Jane Doe')).toBeInTheDocument();
   });
 
+  it('shows an initials avatar next to each name', async () => {
+    await renderPage();
+    expect(await screen.findByText('Jane Doe')).toBeInTheDocument();
+    expect(screen.getByText('JD')).toHaveAttribute('aria-hidden', 'true');
+  });
+
   it('renders job title and country', async () => {
     await renderPage();
     expect(await screen.findByText('Software Engineer')).toBeInTheDocument();

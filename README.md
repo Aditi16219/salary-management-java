@@ -110,7 +110,7 @@ cd backend
 ./mvnw test                  # Windows: mvnw.cmd test
 ```
 
-**Frontend (52 tests)**
+**Frontend (58 tests)**
 
 ```bash
 cd frontend
@@ -209,7 +209,7 @@ salary-management-java/
 │   │   ├── components/      # Reusable UI components
 │   │   ├── pages/           # Route-level page components
 │   │   ├── models/          # TypeScript interfaces
-│   │   └── **/*.spec.ts     # 52 Jest tests
+│   │   └── **/*.spec.ts     # 58 Jest tests
 │   ├── Dockerfile
 │   ├── angular.json
 │   └── package.json

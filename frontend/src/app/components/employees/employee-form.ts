@@ -12,14 +12,14 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         @for (field of fields; track field.name) {
           <div>
-            <label [for]="field.name" class="block text-sm font-medium text-indigo-800 mb-1">{{ field.label }}</label>
+            <label [for]="field.name" class="block text-sm font-medium text-slate-700 mb-1">{{ field.label }}</label>
             <input
               [id]="field.name"
               [type]="field.type"
               [placeholder]="field.placeholder"
               [formControlName]="field.name"
               [attr.min]="field.type === 'number' ? 0 : null"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               [class.border-red-400]="error(field.name)"
               [class.border-gray-300]="!error(field.name)"
             />
@@ -29,11 +29,11 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
           </div>
         }
         <div>
-          <label for="employment_type" class="block text-sm font-medium text-indigo-800 mb-1">Employment Type</label>
+          <label for="employment_type" class="block text-sm font-medium text-slate-700 mb-1">Employment Type</label>
           <select
             id="employment_type"
             formControlName="employment_type"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             @for (type of employmentTypes; track type.value) {
               <option [value]="type.value">{{ type.label }}</option>
@@ -53,7 +53,7 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
         <button
           type="submit"
           [disabled]="submitting()"
-          class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-60"
+          class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 disabled:opacity-60"
         >
           {{ submitting() ? 'Saving…' : submitLabel() }}
         </button>

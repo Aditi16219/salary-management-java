@@ -8,7 +8,7 @@ import {
   Trash2,
 } from 'lucide-angular';
 import { Employee, EmploymentType, SortBy, SortOrder } from '../../models/employee';
-import { formatSalary, formatType } from '../../utils/format';
+import { formatSalary, formatType, initials } from '../../utils/format';
 
 @Component({
   selector: 'app-employee-table',
@@ -20,13 +20,13 @@ import { formatSalary, formatType } from '../../utils/format';
       <div class="text-center py-12 text-gray-500">No employees found.</div>
     } @else {
       <!-- Scrolls sideways on narrow screens instead of clipping the last columns. -->
-      <div class="bg-white rounded-lg border border-gray-200 overflow-x-auto">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-indigo-50 border-b border-indigo-100">
+          <thead class="bg-teal-50 border-b border-teal-100">
             <tr>
               @for (col of columns; track col.label) {
                 <th
-                  class="px-4 py-3 font-semibold text-indigo-700 text-xs uppercase tracking-wide whitespace-nowrap"
+                  class="px-4 py-3 font-semibold text-teal-700 text-xs uppercase tracking-wide whitespace-nowrap"
                   [class.text-right]="col.right"
                   [class.text-left]="!col.right"
                   [attr.aria-sort]="col.sortKey ? ariaSort(col.sortKey) : null"
@@ -35,7 +35,7 @@ import { formatSalary, formatType } from '../../utils/format';
                     <button
                       type="button"
                       (click)="sort.emit(key)"
-                      class="uppercase tracking-wide font-semibold cursor-pointer hover:text-indigo-900 select-none"
+                      class="uppercase tracking-wide font-semibold cursor-pointer hover:text-slate-900 select-none"
                     >
                       {{ col.label }}
                       <lucide-icon
@@ -43,7 +43,7 @@ import { formatSalary, formatType } from '../../utils/format';
                         [size]="13"
                         class="inline ml-1"
                         [class.opacity-40]="sortBy() !== key"
-                        [class.text-indigo-300]="sortBy() === key"
+                        [class.text-teal-500]="sortBy() === key"
                       />
                     </button>
                   } @else {
@@ -56,7 +56,15 @@ import { formatSalary, formatType } from '../../utils/format';
           <tbody class="divide-y divide-gray-100">
             @for (emp of employees(); track emp.id) {
               <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 font-medium text-gray-900">{{ emp.full_name }}</td>
+                <td class="px-4 py-3 font-medium text-gray-900">
+                  <div class="flex items-center gap-3">
+                    <span
+                      aria-hidden="true"
+                      class="w-8 h-8 shrink-0 rounded-full bg-teal-100 text-teal-700 text-xs font-semibold flex items-center justify-center"
+                    >{{ initials(emp.full_name) }}</span>
+                    <span>{{ emp.full_name }}</span>
+                  </div>
+                </td>
                 <td class="px-4 py-3 text-gray-500 text-xs">{{ emp.email }}</td>
                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.job_title }}</td>
                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.department }}</td>
@@ -75,7 +83,7 @@ import { formatSalary, formatType } from '../../utils/format';
                   <div class="flex items-center gap-2 justify-end">
                     <button
                       (click)="edit.emit(emp.id)"
-                      class="p-1 text-gray-400 hover:text-indigo-600"
+                      class="p-1 text-gray-400 hover:text-teal-600"
                       aria-label="Edit"
                     >
                       <lucide-icon [img]="PencilIcon" [size]="15" />
@@ -113,10 +121,11 @@ export class EmployeeTable {
   ];
   protected readonly formatSalary = formatSalary;
   protected readonly formatType = formatType;
+  protected readonly initials = initials;
   protected readonly badgeClass: Record<EmploymentType, string> = {
-    full_time: 'bg-green-100 text-green-700',
-    part_time: 'bg-yellow-100 text-yellow-700',
-    contract: 'bg-blue-100 text-blue-700',
+    full_time: 'bg-emerald-100 text-emerald-700',
+    part_time: 'bg-amber-100 text-amber-700',
+    contract: 'bg-sky-100 text-sky-700',
   };
 
   readonly employees = input.required<Employee[]>();

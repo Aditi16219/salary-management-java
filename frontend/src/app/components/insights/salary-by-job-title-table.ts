@@ -7,7 +7,7 @@ import { formatSalary } from '../../utils/format';
   selector: 'app-salary-by-job-title-table',
   imports: [DecimalPipe],
   template: `
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div class="px-4 py-3 border-b border-sky-100 bg-sky-50 flex items-center justify-between">
         <h3 class="font-semibold text-sky-800 text-sm">Avg Salary by Job Title</h3>
         <select

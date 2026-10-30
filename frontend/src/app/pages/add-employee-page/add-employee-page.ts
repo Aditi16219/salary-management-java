@@ -10,11 +10,11 @@ import { apiErrorMessage } from '../../api/api-config';
   imports: [EmployeeForm],
   template: `
     <div class="max-w-2xl mx-auto">
-      <div class="mb-6 pb-4 border-b border-indigo-100">
-        <h2 class="text-2xl font-bold text-indigo-900">Add Employee</h2>
-        <p class="text-sm text-indigo-400 mt-1">Fill in the details to add a new employee.</p>
+      <div class="mb-6 pb-4 border-b border-teal-100">
+        <h2 class="text-2xl font-bold text-slate-900">Add Employee</h2>
+        <p class="text-sm text-slate-500 mt-1">Fill in the details to add a new employee.</p>
       </div>
-      <div class="bg-white rounded-xl border border-indigo-100 shadow-sm p-6">
+      <div class="bg-white rounded-xl border border-teal-100 shadow-sm p-6">
         @if (error()) {
           <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
         }

@@ -8,7 +8,7 @@ import { Component, input, output } from '@angular/core';
         role="dialog"
         aria-modal="true"
         [attr.aria-label]="title()"
-        class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4"
+        class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4"
       >
         <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ title() }}</h3>
         <p class="text-gray-600 text-sm mb-6">{{ message() }}</p>
