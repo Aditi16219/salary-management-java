@@ -2,8 +2,10 @@ FROM node:24-alpine
 
 WORKDIR /app
 
+ENV NG_CLI_ANALYTICS=false
+
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 

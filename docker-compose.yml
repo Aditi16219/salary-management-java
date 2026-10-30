@@ -5,6 +5,7 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
+      - ./seed:/seed
     environment:
       - DATABASE_URL=jdbc:sqlite:/app/data/salary.db
 
@@ -12,7 +13,5 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
-    environment:
-      - API_URL=http://localhost:8000
     depends_on:
       - backend
