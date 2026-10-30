@@ -74,8 +74,8 @@ subclass so a duplicate email surfaces as Spring's `DataIntegrityViolationExcept
 App
 ├── Layout (nav)
 ├── EmployeesPage
-│   ├── EmployeeFilters
-│   ├── EmployeeTable
+│   ├── EmployeeFilters (search, country, department, job title dropdowns)
+│   ├── EmployeeTable   (sortable by salary / hire date)
 │   ├── Pagination
 │   └── ConfirmDialog (delete confirmation)
 ├── AddEmployeePage → EmployeeForm
@@ -83,7 +83,7 @@ App
 └── InsightsPage
     ├── StatCard ×4
     ├── SalaryByCountryTable
-    ├── SalaryByJobTitleTable (country selector)
+    ├── SalaryByJobTitleTable (interactive country selector)
     ├── DepartmentSummaryTable
     └── TopEarnersTable
 ```
@@ -99,8 +99,8 @@ via `forkJoin` to minimise perceived latency.
 ### API services
 
 `src/app/api/api-config.ts` holds the backend base URL (an `InjectionToken`)
-and a helper that drops empty query params. `EmployeesService` and
-`InsightsService` wrap `HttpClient` and return fully-typed observables.
+and a helper that drops empty query params. `EmployeesService`,
+`InsightsService` and `MetaService` wrap `HttpClient` and return fully-typed observables.
 
 ---
 
@@ -118,6 +118,22 @@ Result: **~0.5s total** for 10,000 rows on SQLite, most of it JVM warm-up.
 
 Key: a JDBC batch inside one transaction avoids per-row commits and the JPA
 persistence context, which would otherwise dominate the run time.
+
+---
+
+## Deployment
+
+The app is fully containerised via Docker Compose:
+
+```
+docker-compose up --build                              ← starts backend + frontend
+docker-compose exec backend java -jar app.jar --seed   ← seeds 10k employees
+```
+
+- **Backend image** is a multi-stage build: a JDK stage compiles and packages the jar with the Maven Wrapper, and a JRE-only stage runs it.
+- **Frontend image** runs the Angular dev server on port 3000.
+- **SQLite** is persisted via a volume mount (`./data` → `/app/data`), and `./seed` is mounted at `/seed` for the seed command.
+- The seed auto-detects where its name files are — `../seed` from `backend/`, `seed` from the repo root, `/seed` inside Docker — or takes `--seed.dir`.
 
 ---
 
