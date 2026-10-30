@@ -4,7 +4,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { EmployeesService } from '../../api/employees.service';
-import { Employee } from '../../models/employee';
+import { Employee, EmployeeListParams, SortBy, SortOrder } from '../../models/employee';
 import { EmployeeFilters } from '../../components/employees/employee-filters';
 import { EmployeeTable } from '../../components/employees/employee-table';
 import { Pagination } from '../../components/ui/pagination';
@@ -38,14 +38,19 @@ const PAGE_SIZE = 20;
         [search]="search()"
         [country]="country()"
         [department]="department()"
+        [jobTitle]="jobTitle()"
         (searchChange)="onFilter(search, $event)"
         (countryChange)="onFilter(country, $event)"
         (departmentChange)="onFilter(department, $event)"
+        (jobTitleChange)="onFilter(jobTitle, $event)"
       />
 
       <app-employee-table
         [employees]="employees()"
         [loading]="loading()"
+        [sortBy]="sortBy()"
+        [sortOrder]="sortOrder()"
+        (sort)="onSort($event)"
         (edit)="router.navigate(['/employees', $event, 'edit'])"
         (delete)="deleteId.set($event)"
       />
@@ -82,14 +87,20 @@ export class EmployeesPage {
   protected readonly search = signal('');
   protected readonly country = signal('');
   protected readonly department = signal('');
+  protected readonly jobTitle = signal('');
+  protected readonly sortBy = signal<SortBy>('full_name');
+  protected readonly sortOrder = signal<SortOrder>('asc');
   protected readonly deleteId = signal<string | null>(null);
 
-  private readonly query = computed(() => ({
+  private readonly query = computed<EmployeeListParams>(() => ({
     page: this.page(),
     page_size: PAGE_SIZE,
     search: this.search(),
     country: this.country(),
     department: this.department(),
+    job_title: this.jobTitle(),
+    sort_by: this.sortBy(),
+    sort_order: this.sortOrder(),
   }));
 
   constructor() {
@@ -111,6 +122,17 @@ export class EmployeesPage {
 
   protected onFilter(filter: WritableSignal<string>, value: string): void {
     filter.set(value);
+    this.page.set(1);
+  }
+
+  /** Same column toggles asc/desc; a new column starts ascending. Either way, back to page 1. */
+  protected onSort(column: SortBy): void {
+    if (this.sortBy() === column) {
+      this.sortOrder.update((order) => (order === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.sortBy.set(column);
+      this.sortOrder.set('asc');
+    }
     this.page.set(1);
   }
 

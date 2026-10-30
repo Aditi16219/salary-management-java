@@ -48,8 +48,11 @@ public class EmployeeController {
             @RequestParam(required = false) String country,
             @RequestParam(name = "job_title", required = false) String jobTitle,
             @RequestParam(required = false) String department,
-            @RequestParam(required = false) String search) {
-        Page<Employee> result = service.listEmployees(page, pageSize, country, jobTitle, department, search);
+            @RequestParam(required = false) String search,
+            @RequestParam(name = "sort_by", defaultValue = "full_name") String sortBy,
+            @RequestParam(name = "sort_order", defaultValue = "asc") String sortOrder) {
+        Page<Employee> result = service.listEmployees(
+                page, pageSize, country, jobTitle, department, search, sortBy, sortOrder);
         return new EmployeeListResponse(
                 result.map(EmployeeResponse::from).getContent(),
                 result.getTotalElements(),

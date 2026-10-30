@@ -27,8 +27,15 @@ const mockResponse = (items = [mockEmployee], total = 1) =>
 // The filters load dropdown options; stub them so tests never hit the network.
 const metaStub = {
   provide: MetaService,
-  useValue: { countries: () => of(['Canada']), departments: () => of(['Finance']) },
+  useValue: {
+    countries: () => of(['Canada']),
+    departments: () => of(['Finance']),
+    jobTitles: () => of(['QA Engineer']),
+  },
 };
+
+/** The params of the most recent list() call. */
+const lastQuery = (list: jest.Mock) => list.mock.calls[list.mock.calls.length - 1][0];
 
 const renderPage = (list = jest.fn().mockReturnValue(mockResponse())) =>
   render(EmployeesPage, {
@@ -81,6 +88,50 @@ describe('EmployeesPage', () => {
   it('has an Add Employee button', async () => {
     await renderPage();
     expect(await screen.findByText('Add Employee')).toBeInTheDocument();
+  });
+
+  it('sorts by full name ascending by default', async () => {
+    const list = jest.fn().mockReturnValue(mockResponse());
+    await renderPage(list);
+    await screen.findByText('Jane Doe');
+
+    expect(lastQuery(list)).toEqual(expect.objectContaining({ sort_by: 'full_name', sort_order: 'asc' }));
+  });
+
+  it('sorts by salary on header click and toggles direction on a second click', async () => {
+    const list = jest.fn().mockReturnValue(mockResponse());
+    await renderPage(list);
+
+    await userEvent.click(await screen.findByRole('button', { name: /salary/i }));
+    expect(lastQuery(list)).toEqual(expect.objectContaining({ sort_by: 'salary', sort_order: 'asc', page: 1 }));
+    expect(screen.getByRole('columnheader', { name: /salary/i })).toHaveAttribute('aria-sort', 'ascending');
+
+    await userEvent.click(await screen.findByRole('button', { name: /salary/i }));
+    expect(lastQuery(list)).toEqual(expect.objectContaining({ sort_by: 'salary', sort_order: 'desc' }));
+    expect(screen.getByRole('columnheader', { name: /salary/i })).toHaveAttribute('aria-sort', 'descending');
+  });
+
+  it('switching to hire date starts ascending and resets to page 1', async () => {
+    const list = jest.fn().mockReturnValue(of({ items: [mockEmployee], total: 45, page: 1, page_size: 20 }));
+    await renderPage(list);
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next page' }));
+    expect(lastQuery(list).page).toBe(2);
+
+    await userEvent.click(await screen.findByRole('button', { name: /salary/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /salary/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /hire date/i }));
+
+    expect(lastQuery(list)).toEqual(expect.objectContaining({ sort_by: 'hire_date', sort_order: 'asc', page: 1 }));
+  });
+
+  it('filters by job title', async () => {
+    const list = jest.fn().mockReturnValue(mockResponse());
+    await renderPage(list);
+
+    await userEvent.selectOptions(await screen.findByRole('combobox', { name: 'Job Title' }), 'QA Engineer');
+
+    expect(lastQuery(list)).toEqual(expect.objectContaining({ job_title: 'QA Engineer', page: 1 }));
   });
 
   it('asks for confirmation before deleting', async () => {

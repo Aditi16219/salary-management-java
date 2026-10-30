@@ -7,9 +7,11 @@ import com.salarymanagement.model.EmploymentType;
 import com.salarymanagement.repository.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -39,8 +41,16 @@ public class EmployeeService {
         return repository.findByIdAndActiveTrue(id);
     }
 
+    /** API sort keys mapped to entity properties; anything else falls back to full_name. */
+    private static final Map<String, String> SORTABLE_COLUMNS = Map.of(
+            "full_name", "fullName",
+            "salary", "salary",
+            "hire_date", "hireDate",
+            "country", "country",
+            "job_title", "jobTitle");
+
     public Page<Employee> listEmployees(int page, int pageSize, String country, String jobTitle,
-                                        String department, String search) {
+                                        String department, String search, String sortBy, String sortOrder) {
         Specification<Employee> spec = (root, query, cb) -> cb.isTrue(root.get("active"));
 
         if (hasText(country)) {
@@ -61,7 +71,12 @@ public class EmployeeService {
             ));
         }
 
-        return repository.findAll(spec, PageRequest.of(page - 1, pageSize));
+        String property = SORTABLE_COLUMNS.getOrDefault(sortBy, "fullName");
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        // id as a tie-breaker keeps page boundaries stable when many rows share a value.
+        Sort sort = Sort.by(direction, property).and(Sort.by("id"));
+
+        return repository.findAll(spec, PageRequest.of(page - 1, pageSize, sort));
     }
 
     public Optional<Employee> updateEmployee(String id, EmployeeUpdate data) {

@@ -23,7 +23,7 @@ const providers = [
       headcountByCountry: empty,
     },
   },
-  { provide: MetaService, useValue: { countries: empty, departments: empty } },
+  { provide: MetaService, useValue: { countries: empty, departments: empty, jobTitles: empty } },
 ];
 
 describe('App', () => {

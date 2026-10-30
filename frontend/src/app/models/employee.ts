@@ -42,4 +42,9 @@ export interface EmployeeListParams {
   job_title?: string;
   department?: string;
   search?: string;
+  sort_by?: SortBy;
+  sort_order?: SortOrder;
 }
+
+export type SortBy = 'full_name' | 'salary' | 'hire_date' | 'country' | 'job_title';
+export type SortOrder = 'asc' | 'desc';

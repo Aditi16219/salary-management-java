@@ -28,4 +28,9 @@ describe('MetaService', () => {
     service.departments().subscribe();
     http.expectOne(`${API}/meta/departments`);
   });
+
+  it('fetches distinct job titles', () => {
+    service.jobTitles().subscribe();
+    http.expectOne(`${API}/meta/job-titles`);
+  });
 });

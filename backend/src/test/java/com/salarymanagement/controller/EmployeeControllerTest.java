@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -193,5 +194,67 @@ class EmployeeControllerTest {
     void deleteNonexistentEmployeeReturns404() throws Exception {
         mockMvc.perform(delete("/employees/nonexistent-id"))
                 .andExpect(status().isNotFound());
+    }
+
+    // --- sorting ---
+
+    private void createSortFixtures() throws Exception {
+        createEmployee(employeePayload("email", "c@x.com", "full_name", "Carol", "salary", "70000.00",
+                "hire_date", "2021-06-01", "job_title", "Designer"));
+        createEmployee(employeePayload("email", "a@x.com", "full_name", "Alice", "salary", "90000.00",
+                "hire_date", "2023-01-10", "job_title", "Engineer"));
+        createEmployee(employeePayload("email", "b@x.com", "full_name", "Bob", "salary", "50000.00",
+                "hire_date", "2019-03-15", "job_title", "Analyst"));
+    }
+
+    @Test
+    void listEmployeesSortsByFullNameByDefault() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees"))
+                .andExpect(jsonPath("$.items[*].full_name").value(contains("Alice", "Bob", "Carol")));
+    }
+
+    @Test
+    void listEmployeesSortsBySalaryDescending() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees").param("sort_by", "salary").param("sort_order", "desc"))
+                .andExpect(jsonPath("$.items[*].full_name").value(contains("Alice", "Carol", "Bob")));
+    }
+
+    @Test
+    void listEmployeesSortsByHireDateAscending() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees").param("sort_by", "hire_date").param("sort_order", "asc"))
+                .andExpect(jsonPath("$.items[*].full_name").value(contains("Bob", "Carol", "Alice")));
+    }
+
+    @Test
+    void listEmployeesSortIsAppliedBeforePagination() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees").param("sort_by", "salary").param("sort_order", "desc")
+                        .param("page", "2").param("page_size", "1"))
+                .andExpect(jsonPath("$.items[*].full_name").value(contains("Carol")));
+    }
+
+    @Test
+    void listEmployeesUnknownSortFallsBackToFullNameAscending() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees").param("sort_by", "email; drop table").param("sort_order", "sideways"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[*].full_name").value(contains("Alice", "Bob", "Carol")));
+    }
+
+    @Test
+    void listEmployeesFilterByJobTitle() throws Exception {
+        createSortFixtures();
+
+        mockMvc.perform(get("/employees").param("job_title", "Engineer"))
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].full_name").value("Alice"));
     }
 }

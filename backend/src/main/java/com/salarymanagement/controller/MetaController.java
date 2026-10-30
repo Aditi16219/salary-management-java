@@ -27,4 +27,9 @@ public class MetaController {
     public List<String> departments() {
         return repository.distinctDepartments();
     }
+
+    @GetMapping("/job-titles")
+    public List<String> jobTitles() {
+        return repository.distinctJobTitles();
+    }
 }

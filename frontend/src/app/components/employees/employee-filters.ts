@@ -1,8 +1,12 @@
 import { Component, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LucideAngularModule, Search } from 'lucide-angular';
-import { catchError, of } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { MetaService } from '../../api/meta.service';
+
+/** Dropdown options as a signal; a failed lookup only empties the dropdown, it never breaks the page. */
+const options = (source: Observable<string[]>) =>
+  toSignal(source.pipe(catchError(() => of([]))), { initialValue: [] });
 
 @Component({
   selector: 'app-employee-filters',
@@ -27,7 +31,7 @@ import { MetaService } from '../../api/meta.service';
       <select
         aria-label="Country"
         (change)="countryChange.emit(valueOf($event))"
-        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
       >
         <option value="" [selected]="country() === ''">All Countries</option>
         @for (c of countries(); track c) {
@@ -38,11 +42,22 @@ import { MetaService } from '../../api/meta.service';
       <select
         aria-label="Department"
         (change)="departmentChange.emit(valueOf($event))"
-        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+        class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
       >
         <option value="" [selected]="department() === ''">All Departments</option>
         @for (d of departments(); track d) {
           <option [value]="d" [selected]="d === department()">{{ d }}</option>
+        }
+      </select>
+
+      <select
+        aria-label="Job Title"
+        (change)="jobTitleChange.emit(valueOf($event))"
+        class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 bg-white"
+      >
+        <option value="" [selected]="jobTitle() === ''">All Job Titles</option>
+        @for (j of jobTitles(); track j) {
+          <option [value]="j" [selected]="j === jobTitle()">{{ j }}</option>
         }
       </select>
     </div>
@@ -52,21 +67,19 @@ export class EmployeeFilters {
   protected readonly SearchIcon = Search;
 
   private readonly meta = inject(MetaService);
-  // A failed lookup only empties the dropdown; it must not break the page.
-  protected readonly countries = toSignal(this.meta.countries().pipe(catchError(() => of([]))), {
-    initialValue: [],
-  });
-  protected readonly departments = toSignal(this.meta.departments().pipe(catchError(() => of([]))), {
-    initialValue: [],
-  });
+  protected readonly countries = options(this.meta.countries());
+  protected readonly departments = options(this.meta.departments());
+  protected readonly jobTitles = options(this.meta.jobTitles());
 
   readonly search = input('');
   readonly country = input('');
   readonly department = input('');
+  readonly jobTitle = input('');
 
   readonly searchChange = output<string>();
   readonly countryChange = output<string>();
   readonly departmentChange = output<string>();
+  readonly jobTitleChange = output<string>();
 
   protected valueOf(event: Event): string {
     return (event.target as HTMLInputElement | HTMLSelectElement).value;

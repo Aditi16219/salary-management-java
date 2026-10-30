@@ -1,6 +1,13 @@
 import { Component, input, output } from '@angular/core';
-import { LucideAngularModule, Pencil, Trash2 } from 'lucide-angular';
-import { Employee, EmploymentType } from '../../models/employee';
+import {
+  ChevronDown,
+  ChevronUp,
+  ChevronsUpDown,
+  LucideAngularModule,
+  Pencil,
+  Trash2,
+} from 'lucide-angular';
+import { Employee, EmploymentType, SortBy, SortOrder } from '../../models/employee';
 import { formatSalary, formatType } from '../../utils/format';
 
 @Component({
@@ -16,13 +23,31 @@ import { formatSalary, formatType } from '../../utils/format';
         <table class="w-full text-sm">
           <thead class="bg-indigo-50 border-b border-indigo-100">
             <tr>
-              @for (header of headers; track header) {
+              @for (col of columns; track col.label) {
                 <th
                   class="px-4 py-3 font-semibold text-indigo-700 text-xs uppercase tracking-wide"
-                  [class.text-right]="header === 'Salary'"
-                  [class.text-left]="header !== 'Salary'"
+                  [class.text-right]="col.right"
+                  [class.text-left]="!col.right"
+                  [attr.aria-sort]="col.sortKey ? ariaSort(col.sortKey) : null"
                 >
-                  {{ header }}
+                  @if (col.sortKey; as key) {
+                    <button
+                      type="button"
+                      (click)="sort.emit(key)"
+                      class="uppercase tracking-wide font-semibold cursor-pointer hover:text-indigo-900 select-none"
+                    >
+                      {{ col.label }}
+                      <lucide-icon
+                        [img]="sortIcon(key)"
+                        [size]="13"
+                        class="inline ml-1"
+                        [class.opacity-40]="sortBy() !== key"
+                        [class.text-indigo-300]="sortBy() === key"
+                      />
+                    </button>
+                  } @else {
+                    {{ col.label }}
+                  }
                 </th>
               }
             </tr>
@@ -49,7 +74,7 @@ import { formatSalary, formatType } from '../../utils/format';
                   <div class="flex items-center gap-2 justify-end">
                     <button
                       (click)="edit.emit(emp.id)"
-                      class="p-1 text-gray-400 hover:text-blue-600"
+                      class="p-1 text-gray-400 hover:text-indigo-600"
                       aria-label="Edit"
                     >
                       <lucide-icon [img]="PencilIcon" [size]="15" />
@@ -74,8 +99,16 @@ import { formatSalary, formatType } from '../../utils/format';
 export class EmployeeTable {
   protected readonly PencilIcon = Pencil;
   protected readonly TrashIcon = Trash2;
-  protected readonly headers = [
-    'Name', 'Email', 'Job Title', 'Department', 'Country', 'Salary', 'Type', 'Hire Date', '',
+  protected readonly columns: { label: string; sortKey?: SortBy; right?: boolean }[] = [
+    { label: 'Name' },
+    { label: 'Email' },
+    { label: 'Job Title' },
+    { label: 'Department' },
+    { label: 'Country' },
+    { label: 'Salary', sortKey: 'salary', right: true },
+    { label: 'Type' },
+    { label: 'Hire Date', sortKey: 'hire_date' },
+    { label: '' },
   ];
   protected readonly formatSalary = formatSalary;
   protected readonly formatType = formatType;
@@ -87,7 +120,24 @@ export class EmployeeTable {
 
   readonly employees = input.required<Employee[]>();
   readonly loading = input(false);
+  readonly sortBy = input<SortBy>('full_name');
+  readonly sortOrder = input<SortOrder>('asc');
 
   readonly edit = output<string>();
   readonly delete = output<string>();
+  readonly sort = output<SortBy>();
+
+  protected sortIcon(key: SortBy) {
+    if (this.sortBy() !== key) {
+      return ChevronsUpDown;
+    }
+    return this.sortOrder() === 'asc' ? ChevronUp : ChevronDown;
+  }
+
+  protected ariaSort(key: SortBy): string {
+    if (this.sortBy() !== key) {
+      return 'none';
+    }
+    return this.sortOrder() === 'asc' ? 'ascending' : 'descending';
+  }
 }

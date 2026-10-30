@@ -16,4 +16,8 @@ export class MetaService {
   departments(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/departments`);
   }
+
+  jobTitles(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/job-titles`);
+  }
 }

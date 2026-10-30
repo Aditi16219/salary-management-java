@@ -66,6 +66,22 @@ class MetaControllerTest {
     }
 
     @Test
+    void jobTitlesAreDistinctAndSorted() throws Exception {
+        emp("a@x.com", "USA", "Engineering");
+        emp("b@x.com", "India", "Design");
+
+        // emp() always uses job title "Engineer"; add one more distinct title.
+        mockMvc.perform(post("/employees").contentType(MediaType.APPLICATION_JSON).content("""
+                {"full_name":"Test User","job_title":"Analyst","country":"USA","salary":"80000.00",
+                 "department":"Data","email":"c@x.com","hire_date":"2022-01-01","employment_type":"full_time"}
+                """));
+
+        mockMvc.perform(get("/meta/job-titles"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(contains("Analyst", "Engineer")));
+    }
+
+    @Test
     void metaExcludesInactiveEmployees() throws Exception {
         emp("a@x.com", "USA", "Engineering");
         String id = emp("b@x.com", "Japan", "Legal");
