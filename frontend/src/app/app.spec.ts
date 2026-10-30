@@ -1,33 +1,29 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 import { App } from './app';
 import { routes } from './app.routes';
 
 describe('App', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-      providers: [provideRouter(routes)],
-    }).compileComponents();
-  });
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    expect(fixture.componentInstance).toBeTruthy();
-  });
-
   it('renders the layout with the app name and navigation', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
+    await render(App, { routes });
 
-    expect(compiled.querySelector('nav')?.textContent).toContain('Salary Management');
-    const links = Array.from(compiled.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Employees', 'Insights']);
+    expect(screen.getByText('Salary Management')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Employees' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Insights' })).toBeInTheDocument();
   });
 
-  it('routes / to the employees page and /insights to the insights page', () => {
-    expect(routes.find((r) => r.path === '')?.component?.name).toContain('EmployeesPage');
-    expect(routes.find((r) => r.path === 'insights')?.component?.name).toContain('InsightsPage');
+  it('shows the employees page at /', async () => {
+    const { navigate } = await render(App, { routes });
+    await navigate('/');
+
+    expect(await screen.findByRole('heading', { name: 'Employees' })).toBeInTheDocument();
+  });
+
+  it('navigates to the insights page from the nav', async () => {
+    await render(App, { routes });
+
+    await userEvent.click(screen.getByRole('link', { name: 'Insights' }));
+
+    expect(await screen.findByRole('heading', { name: 'Insights' })).toBeInTheDocument();
   });
 });
