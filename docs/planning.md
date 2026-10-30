@@ -83,9 +83,14 @@ Post-plan additions (based on testing the live app):
 - "Avg salary by job title in a country" section added to Insights UI (the API endpoint existed from the insights commit; the dashboard section was added here, following the original project's sequence, where this gap was caught during a requirements review)
 - Seed folder auto-detection — the seed finds its name files from `backend/` (`../seed`), the repo root (`seed`) or Docker (`/seed`)
 
-One commit from the original history — converting PostCSS/Tailwind configs to CommonJS for
-Node 16 — has no equivalent here (Angular's build reads `.postcssrc.json` and Tailwind v4 needs no
-config file), so it was dropped rather than invented.
+Two commits from the original history have no equivalent here, so they were dropped rather than invented:
+- Converting PostCSS/Tailwind configs to CommonJS for Node 16 — Angular's build reads `.postcssrc.json`
+  and Tailwind v4 needs no config file
+- Mocking the meta API in the Employees page tests — the same problem did occur here, but it was fixed
+  in the dropdowns commit itself, so no tests were ever committed failing
+
+One fix was added that the original doesn't have: the employee table now scrolls sideways on narrow
+screens instead of clipping its last columns.
 
 Every commit was reviewed and approved before it was made, and before it was pushed.
 

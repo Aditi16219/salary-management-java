@@ -199,17 +199,30 @@ salary-management-java/
 │   │   ├── exception/       # {"detail": ...} error handling
 │   │   ├── config/          # CORS + SQLite dialect
 │   │   └── seed/            # Seed data generator + bulk insert
-│   └── src/test/java/       # 55 JUnit tests
+│   ├── src/test/java/       # 55 JUnit tests
+│   ├── Dockerfile           # Multi-stage: JDK build → JRE runtime
+│   ├── pom.xml
+│   └── mvnw / mvnw.cmd      # Maven Wrapper (no Maven install needed)
 ├── frontend/
-│   └── src/app/
-│       ├── api/             # Typed HttpClient services
-│       ├── components/      # Reusable UI components
-│       ├── pages/           # Route-level page components
-│       ├── models/          # TypeScript interfaces
-│       └── **/*.spec.ts     # 52 Jest tests
+│   ├── src/app/
+│   │   ├── api/             # Typed HttpClient services
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/           # Route-level page components
+│   │   ├── models/          # TypeScript interfaces
+│   │   └── **/*.spec.ts     # 52 Jest tests
+│   ├── Dockerfile
+│   ├── angular.json
+│   └── package.json
 ├── seed/
 │   ├── seed.sh / seed.cmd   # Run the seed (--seed flag)
 │   ├── first_names.txt
 │   └── last_names.txt
-└── docker-compose.yml
+├── docs/
+│   ├── planning.md          # Planning notes and design decisions
+│   ├── architecture.md      # Architecture, trade-offs, performance
+│   └── ai-usage.md          # AI tool usage and prompts
+├── data/                    # SQLite database (Docker volume)
+├── .gitignore
+├── docker-compose.yml
+└── README.md
 ```
