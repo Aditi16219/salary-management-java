@@ -1,0 +1,24 @@
+<div class="min-h-screen bg-gray-50">
+  <nav class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <span class="text-xl font-bold text-gray-900">Salary Management</span>
+      <div class="flex gap-6">
+        @for (item of navItems; track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive
+            [routerLinkActiveOptions]="{ exact: true }"
+            #rla="routerLinkActive"
+            class="text-sm font-medium transition-colors"
+            [class]="rla.isActive ? 'text-blue-600' : 'text-gray-500 hover:text-gray-900'"
+          >
+            {{ item.label }}
+          </a>
+        }
+      </div>
+    </div>
+  </nav>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <ng-content />
+  </main>
+</div>
