@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 import { NEVER, of } from 'rxjs';
 import { EmployeesPage } from './employees-page';
 import { EmployeesService } from '../../api/employees.service';
@@ -62,5 +63,22 @@ describe('EmployeesPage', () => {
   it('has an Add Employee button', async () => {
     await renderPage();
     expect(await screen.findByText('Add Employee')).toBeInTheDocument();
+  });
+
+  it('asks for confirmation before deleting', async () => {
+    const remove = jest.fn().mockReturnValue(of(undefined));
+    await render(EmployeesPage, {
+      providers: [
+        { provide: EmployeesService, useValue: { list: jest.fn().mockReturnValue(mockResponse()), remove } },
+      ],
+    });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }));
+    expect(remove).not.toHaveBeenCalled();
+    expect(screen.getByText(/are you sure/i)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Employee' }));
+    expect(remove).toHaveBeenCalledWith('1');
+    expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument();
   });
 });

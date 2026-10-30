@@ -1,4 +1,4 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { InjectionToken } from '@angular/core';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {
@@ -15,4 +15,12 @@ export function toParams(values: object = {}): HttpParams {
     }
   }
   return params;
+}
+
+/** The API returns errors as {"detail": "..."}; fall back to a generic message. */
+export function apiErrorMessage(error: unknown): string {
+  if (error instanceof HttpErrorResponse && typeof error.error?.detail === 'string') {
+    return error.error.detail;
+  }
+  return 'Something went wrong. Please try again.';
 }

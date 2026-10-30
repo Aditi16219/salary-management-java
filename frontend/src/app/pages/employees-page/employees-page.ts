@@ -8,12 +8,13 @@ import { Employee } from '../../models/employee';
 import { EmployeeFilters } from '../../components/employees/employee-filters';
 import { EmployeeTable } from '../../components/employees/employee-table';
 import { Pagination } from '../../components/ui/pagination';
+import { ConfirmDialog } from '../../components/ui/confirm-dialog';
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-employees-page',
-  imports: [DecimalPipe, EmployeeFilters, EmployeeTable, Pagination],
+  imports: [DecimalPipe, EmployeeFilters, EmployeeTable, Pagination, ConfirmDialog],
   template: `
     <div>
       <div class="flex items-center justify-between mb-6">
@@ -46,8 +47,17 @@ const PAGE_SIZE = 20;
         [employees]="employees()"
         [loading]="loading()"
         (edit)="router.navigate(['/employees', $event, 'edit'])"
-        (delete)="onDelete($event)"
+        (delete)="deleteId.set($event)"
       />
+
+      @if (deleteId()) {
+        <app-confirm-dialog
+          title="Delete Employee"
+          message="Are you sure you want to delete this employee? This cannot be undone."
+          (confirm)="executeDelete()"
+          (cancel)="deleteId.set(null)"
+        />
+      }
 
       @if (!loading() && total() > pageSize) {
         <app-pagination
@@ -72,6 +82,7 @@ export class EmployeesPage {
   protected readonly search = signal('');
   protected readonly country = signal('');
   protected readonly department = signal('');
+  protected readonly deleteId = signal<string | null>(null);
 
   private readonly query = computed(() => ({
     page: this.page(),
@@ -103,10 +114,15 @@ export class EmployeesPage {
     this.page.set(1);
   }
 
-  protected onDelete(id: string): void {
+  protected executeDelete(): void {
+    const id = this.deleteId();
+    if (!id) {
+      return;
+    }
     this.employeesService.remove(id).subscribe(() => {
       this.employees.update((list) => list.filter((e) => e.id !== id));
       this.total.update((t) => t - 1);
+      this.deleteId.set(null);
     });
   }
 }
