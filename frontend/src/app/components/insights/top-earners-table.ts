@@ -6,15 +6,15 @@ import { formatSalary } from '../../utils/format';
   selector: 'app-top-earners-table',
   template: `
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div class="px-4 py-3 border-b border-gray-100">
-        <h3 class="font-semibold text-gray-800 text-sm">Top Earners</h3>
+      <div class="px-4 py-3 border-b border-violet-100 bg-violet-50">
+        <h3 class="font-semibold text-violet-800 text-sm">Top Earners</h3>
       </div>
       <table class="w-full text-sm">
         <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
             @for (h of headers; track h) {
               <th
-                class="px-4 py-2 font-medium text-gray-500"
+                class="px-4 py-2 font-semibold text-violet-600 text-xs uppercase tracking-wide"
                 [class.text-right]="h === 'Salary'"
                 [class.text-left]="h !== 'Salary'"
               >

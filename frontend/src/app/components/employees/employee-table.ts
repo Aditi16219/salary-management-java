@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { LucideAngularModule, Pencil, Trash2 } from 'lucide-angular';
-import { Employee } from '../../models/employee';
+import { Employee, EmploymentType } from '../../models/employee';
 import { formatSalary, formatType } from '../../utils/format';
 
 @Component({
@@ -14,11 +14,11 @@ import { formatSalary, formatType } from '../../utils/format';
     } @else {
       <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <table class="w-full text-sm">
-          <thead class="bg-gray-50 border-b border-gray-200">
+          <thead class="bg-indigo-50 border-b border-indigo-100">
             <tr>
               @for (header of headers; track header) {
                 <th
-                  class="px-4 py-3 font-medium text-gray-600"
+                  class="px-4 py-3 font-semibold text-indigo-700 text-xs uppercase tracking-wide"
                   [class.text-right]="header === 'Salary'"
                   [class.text-left]="header !== 'Salary'"
                 >
@@ -38,7 +38,8 @@ import { formatSalary, formatType } from '../../utils/format';
                 <td class="px-4 py-3 text-right text-gray-900">{{ formatSalary(emp.salary) }}</td>
                 <td class="px-4 py-3">
                   <span
-                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 whitespace-nowrap"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap"
+                    [class]="badgeClass[emp.employment_type]"
                   >
                     {{ formatType(emp.employment_type) }}
                   </span>
@@ -78,6 +79,11 @@ export class EmployeeTable {
   ];
   protected readonly formatSalary = formatSalary;
   protected readonly formatType = formatType;
+  protected readonly badgeClass: Record<EmploymentType, string> = {
+    full_time: 'bg-green-100 text-green-700',
+    part_time: 'bg-yellow-100 text-yellow-700',
+    contract: 'bg-blue-100 text-blue-700',
+  };
 
   readonly employees = input.required<Employee[]>();
   readonly loading = input(false);

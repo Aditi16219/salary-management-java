@@ -26,16 +26,17 @@ import { formatSalary } from '../../utils/format';
     } @else {
       <div class="space-y-8">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">Insights</h2>
-          <p class="text-sm text-gray-500 mt-1">Salary analytics across your organization.</p>
+          <h2 class="text-2xl font-bold text-indigo-900">Insights</h2>
+          <p class="text-sm text-indigo-400 mt-1">Salary analytics across your organization.</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <app-stat-card label="Total Employees" [value]="(totalEmployees() | number) ?? '0'" />
-          <app-stat-card label="Global Avg Salary" [value]="fmt(globalAvg())" />
-          <app-stat-card label="Highest Salary" [value]="fmt(globalMax())" />
+          <app-stat-card label="Total Employees" [value]="(totalEmployees() | number) ?? '0'" color="indigo" />
+          <app-stat-card label="Global Avg Salary" [value]="fmt(globalAvg())" color="blue" />
+          <app-stat-card label="Highest Salary" [value]="fmt(globalMax())" color="violet" />
           <app-stat-card
             label="Top Country"
+            color="sky"
             [value]="topCountry()?.country ?? '—'"
             [sub]="((topCountry()?.employee_count ?? 0) | number) + ' employees'"
           />

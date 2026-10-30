@@ -12,7 +12,7 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         @for (field of fields; track field.name) {
           <div>
-            <label [for]="field.name" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+            <label [for]="field.name" class="block text-sm font-medium text-indigo-800 mb-1">{{ field.label }}</label>
             <input
               [id]="field.name"
               [type]="field.type"
@@ -29,7 +29,7 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
           </div>
         }
         <div>
-          <label for="employment_type" class="block text-sm font-medium text-gray-700 mb-1">Employment Type</label>
+          <label for="employment_type" class="block text-sm font-medium text-indigo-800 mb-1">Employment Type</label>
           <select
             id="employment_type"
             formControlName="employment_type"
@@ -53,7 +53,7 @@ type FieldName = 'full_name' | 'email' | 'job_title' | 'department' | 'country' 
         <button
           type="submit"
           [disabled]="submitting()"
-          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-60"
+          class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-60"
         >
           {{ submitting() ? 'Saving…' : submitLabel() }}
         </button>

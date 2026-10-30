@@ -15,11 +15,11 @@ import { apiErrorMessage } from '../../api/api-config';
       <div class="text-gray-500 py-8">Loading...</div>
     } @else if (employee(); as emp) {
       <div class="max-w-2xl mx-auto">
-        <div class="mb-6">
-          <h2 class="text-2xl font-bold text-gray-900">Edit Employee</h2>
-          <p class="text-sm text-gray-500 mt-1">{{ emp.full_name }}</p>
+        <div class="mb-6 pb-4 border-b border-indigo-100">
+          <h2 class="text-2xl font-bold text-indigo-900">Edit Employee</h2>
+          <p class="text-sm text-indigo-400 mt-1">{{ emp.full_name }}</p>
         </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="bg-white rounded-xl border border-indigo-100 shadow-sm p-6">
           @if (error()) {
             <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
           }
