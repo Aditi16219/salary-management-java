@@ -17,11 +17,11 @@ public class SeedCommand implements ApplicationRunner {
     private static final int TARGET_COUNT = 10_000;
 
     private final SeedService seedService;
-    private final Path seedDir;
+    private final String configuredDir;
 
-    public SeedCommand(SeedService seedService, @Value("${seed.dir:../seed}") String seedDir) {
+    public SeedCommand(SeedService seedService, @Value("${seed.dir:}") String configuredDir) {
         this.seedService = seedService;
-        this.seedDir = Path.of(seedDir);
+        this.configuredDir = configuredDir;
     }
 
     @Override
@@ -30,8 +30,12 @@ public class SeedCommand implements ApplicationRunner {
             return;
         }
 
-        List<String> firstNames = readNames("first_names.txt");
-        List<String> lastNames = readNames("last_names.txt");
+        // Resolved only when seeding, so a normal API start never depends on the seed folder.
+        Path seedDir = SeedDirectory.resolve(configuredDir, SeedDirectory.DEFAULT_CANDIDATES);
+        System.out.println("Using names from " + seedDir.toAbsolutePath().normalize());
+
+        List<String> firstNames = readNames(seedDir.resolve("first_names.txt"));
+        List<String> lastNames = readNames(seedDir.resolve("last_names.txt"));
         System.out.printf("Loaded %d first names, %d last names%n", firstNames.size(), lastNames.size());
 
         System.out.printf("Generating %,d records...%n", TARGET_COUNT);
@@ -47,8 +51,8 @@ public class SeedCommand implements ApplicationRunner {
         System.out.printf("Total time: %.2fs%n", seconds(t2 - t0));
     }
 
-    private List<String> readNames(String fileName) throws IOException {
-        return Files.readAllLines(seedDir.resolve(fileName)).stream()
+    private static List<String> readNames(Path file) throws IOException {
+        return Files.readAllLines(file).stream()
                 .map(String::strip)
                 .filter(line -> !line.isEmpty())
                 .toList();
