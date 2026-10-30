@@ -24,6 +24,7 @@ development process, as a rebuild of an earlier Python/React version on Java + A
 - **Maven Wrapper failed on Windows** — its download step couldn't rename the extracted directory; worked around by placing the Maven distribution in the wrapper's cache manually
 - **Page tests making real HTTP calls** — adding the dropdown filters made the Employees page tests call `/meta/*` over the network; the tests now stub the service, and the UI falls back to empty dropdowns if a lookup fails
 - **Mixed storage risk** — seeded rows are written via JDBC and UI-created rows via Hibernate; if they stored dates or salaries differently, SQLite would sort them into separate clusters. Verified on a real seeded database that API-created rows sort correctly among the 10,000 seeded ones in both directions
+- **Seed only worked from one folder** — the seed resolved `../seed` against the working directory, so running it from the repo root failed with a bare `NoSuchFileException` (hit for real while testing). It now searches the `backend/`, repo-root and Docker layouts and fails with a clear message otherwise; verified from all three plus an unrelated folder
 
 ### UI iteration
 - After seeing the running app, the same post-plan features as the original were added: dropdowns for filters, column sorting, colour theme, extra table columns

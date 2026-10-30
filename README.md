@@ -97,11 +97,13 @@ npm start
 seed\seed.cmd                # Windows
 ```
 
+> The seed auto-detects where the name files are — `../seed` when run from `backend/`, `seed` from the repo root, `/seed` inside Docker — and prints the folder it used. To use another folder, pass `--seed.dir=<path>`.
+
 ---
 
 ## Running Tests
 
-**Backend (51 tests)**
+**Backend (55 tests)**
 
 ```bash
 cd backend
@@ -197,7 +199,7 @@ salary-management-java/
 │   │   ├── exception/       # {"detail": ...} error handling
 │   │   ├── config/          # CORS + SQLite dialect
 │   │   └── seed/            # Seed data generator + bulk insert
-│   └── src/test/java/       # 51 JUnit tests
+│   └── src/test/java/       # 55 JUnit tests
 ├── frontend/
 │   └── src/app/
 │       ├── api/             # Typed HttpClient services
