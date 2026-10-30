@@ -19,7 +19,8 @@ import { formatSalary, formatType } from '../../utils/format';
     } @else if (employees().length === 0) {
       <div class="text-center py-12 text-gray-500">No employees found.</div>
     } @else {
-      <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <!-- Scrolls sideways on narrow screens instead of clipping the last columns. -->
+      <div class="bg-white rounded-lg border border-gray-200 overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-indigo-50 border-b border-indigo-100">
             <tr>
