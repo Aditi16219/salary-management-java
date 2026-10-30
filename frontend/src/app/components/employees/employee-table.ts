@@ -25,7 +25,7 @@ import { formatSalary, formatType } from '../../utils/format';
             <tr>
               @for (col of columns; track col.label) {
                 <th
-                  class="px-4 py-3 font-semibold text-indigo-700 text-xs uppercase tracking-wide"
+                  class="px-4 py-3 font-semibold text-indigo-700 text-xs uppercase tracking-wide whitespace-nowrap"
                   [class.text-right]="col.right"
                   [class.text-left]="!col.right"
                   [attr.aria-sort]="col.sortKey ? ariaSort(col.sortKey) : null"
