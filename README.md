@@ -72,7 +72,7 @@ cd backend
 ./mvnw test                  # Windows: mvnw.cmd test
 ```
 
-**Frontend (49 tests)**
+**Frontend (52 tests)**
 
 ```bash
 cd frontend
@@ -96,6 +96,7 @@ npm run test:run
 ### Salary Insights Dashboard
 - Global summary: total headcount, avg salary, highest salary, top country
 - Salary by country: min / avg / max per country
+- **Avg salary by job title in a country** — interactive country selector updates table instantly
 - Department summary: headcount and salary range per department
 - Top 10 earners across the organisation
 
@@ -167,7 +168,7 @@ salary-management-java/
 │       ├── components/      # Reusable UI components
 │       ├── pages/           # Route-level page components
 │       ├── models/          # TypeScript interfaces
-│       └── **/*.spec.ts     # 49 Jest tests
+│       └── **/*.spec.ts     # 52 Jest tests
 ├── seed/
 │   ├── seed.sh / seed.cmd   # Run the seed (--seed flag)
 │   ├── first_names.txt

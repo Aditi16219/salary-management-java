@@ -1,23 +1,32 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { catchError, filter, forkJoin, of, switchMap } from 'rxjs';
 import { InsightsService } from '../../api/insights.service';
 import {
   CountryHeadcount,
   CountrySalaryStats,
   DepartmentSummary,
+  JobTitleSalaryStats,
   TopEarner,
 } from '../../models/insights';
 import { StatCard } from '../../components/ui/stat-card';
 import { SalaryByCountryTable } from '../../components/insights/salary-by-country-table';
+import { SalaryByJobTitleTable } from '../../components/insights/salary-by-job-title-table';
 import { DepartmentSummaryTable } from '../../components/insights/department-summary-table';
 import { TopEarnersTable } from '../../components/insights/top-earners-table';
 import { formatSalary } from '../../utils/format';
 
 @Component({
   selector: 'app-insights-page',
-  imports: [DecimalPipe, StatCard, SalaryByCountryTable, DepartmentSummaryTable, TopEarnersTable],
+  imports: [
+    DecimalPipe,
+    StatCard,
+    SalaryByCountryTable,
+    SalaryByJobTitleTable,
+    DepartmentSummaryTable,
+    TopEarnersTable,
+  ],
   template: `
     @if (loading()) {
       <div class="text-gray-500 py-8">Loading insights…</div>
@@ -43,6 +52,13 @@ import { formatSalary } from '../../utils/format';
         </div>
 
         <app-salary-by-country-table [rows]="countryStats()" />
+
+        <app-salary-by-job-title-table
+          [rows]="jobTitleStats()"
+          [country]="jobTitleCountry()"
+          [countries]="countryNames()"
+          (countryChange)="jobTitleCountry.set($event)"
+        />
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <app-department-summary-table [rows]="deptStats()" />
@@ -81,7 +97,22 @@ export class InsightsPage {
   /** headcount-by-country is sorted by count desc, so the first row is the largest. */
   protected readonly topCountry = computed<CountryHeadcount | undefined>(() => this.headcount()[0]);
 
+  protected readonly countryNames = computed(() => this.countryStats().map((r) => r.country));
+  protected readonly jobTitleCountry = signal('');
+  protected readonly jobTitleStats = signal<JobTitleSalaryStats[]>([]);
+
   constructor() {
+    // Reload the job-title breakdown whenever the selected country changes.
+    toObservable(this.jobTitleCountry)
+      .pipe(
+        filter((country) => country !== ''),
+        switchMap((country) =>
+          this.insightsService.salaryByJobTitle(country).pipe(catchError(() => of([]))),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((rows) => this.jobTitleStats.set(rows));
+
     forkJoin({
       countries: this.insightsService.salaryByCountry(),
       departments: this.insightsService.departmentSummary(),
@@ -95,6 +126,7 @@ export class InsightsPage {
           this.deptStats.set(departments);
           this.topEarners.set(topEarners);
           this.headcount.set(headcount);
+          this.jobTitleCountry.set(headcount[0]?.country ?? '');
           this.loading.set(false);
         },
         error: () => {

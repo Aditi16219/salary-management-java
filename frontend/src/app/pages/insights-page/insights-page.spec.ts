@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 import { NEVER, of } from 'rxjs';
 import { InsightsPage } from './insights-page';
 import { InsightsService } from '../../api/insights.service';
@@ -21,12 +22,17 @@ const mockHeadcount = [
   { country: 'United Kingdom', employee_count: 200 },
 ];
 
+const mockJobTitleStats: Record<string, unknown[]> = {
+  'United States': [{ job_title: 'Data Scientist', country: 'United States', avg_salary: 130000, employee_count: 25 }],
+  'United Kingdom': [{ job_title: 'UX Designer', country: 'United Kingdom', avg_salary: 88000, employee_count: 12 }],
+};
+
 const mockService = () => ({
   salaryByCountry: jest.fn().mockReturnValue(of(mockSalaryByCountry)),
   departmentSummary: jest.fn().mockReturnValue(of(mockDeptSummary)),
   topEarners: jest.fn().mockReturnValue(of(mockTopEarners)),
   headcountByCountry: jest.fn().mockReturnValue(of(mockHeadcount)),
-  salaryByJobTitle: jest.fn().mockReturnValue(of([])),
+  salaryByJobTitle: jest.fn((country: string) => of(mockJobTitleStats[country] ?? [])),
 });
 
 const renderPage = (service = mockService()) =>
@@ -72,5 +78,34 @@ describe('InsightsPage', () => {
     expect(await card('Highest Salary')).toHaveTextContent('$150,000');
     expect(await card('Top Country')).toHaveTextContent('United States');
     expect(await card('Top Country')).toHaveTextContent('500 employees');
+  });
+
+  it('shows avg salary by job title for the top country by default', async () => {
+    const service = mockService();
+    await renderPage(service);
+
+    expect(await screen.findByText('Avg Salary by Job Title')).toBeInTheDocument();
+    expect(screen.getByText('Data Scientist')).toBeInTheDocument();
+    expect(service.salaryByJobTitle).toHaveBeenCalledWith('United States');
+    expect(screen.getByRole('combobox', { name: 'Country' })).toHaveValue('United States');
+  });
+
+  it('reloads job title stats when another country is selected', async () => {
+    const service = mockService();
+    await renderPage(service);
+
+    await userEvent.selectOptions(await screen.findByRole('combobox', { name: 'Country' }), 'United Kingdom');
+
+    expect(service.salaryByJobTitle).toHaveBeenLastCalledWith('United Kingdom');
+    expect(await screen.findByText('UX Designer')).toBeInTheDocument();
+    expect(screen.queryByText('Data Scientist')).not.toBeInTheDocument();
+  });
+
+  it('shows an empty state when a country has no job title data', async () => {
+    const service = mockService();
+    service.salaryByJobTitle.mockImplementation(() => of([]));
+    await renderPage(service);
+
+    expect(await screen.findByText('No data for this country.')).toBeInTheDocument();
   });
 });

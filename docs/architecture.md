@@ -46,6 +46,10 @@ Server-side sorting is applied before pagination so results are globally ordered
 
 `/meta/countries`, `/meta/departments`, `/meta/job-titles` return distinct values from active employees. These power the filter dropdowns in the UI and are always in sync with the actual data — no hardcoded lists. If a lookup fails, the UI falls back to an empty dropdown rather than breaking the page.
 
+### Salary by job title in a country
+
+`/insights/salary-by-jobtitle?country=X` is exposed on the Insights dashboard via an interactive country selector. It defaults to the country with the largest headcount; changing the country fires a new request (via `switchMap`, so only the latest selection's response is shown) and updates the table — no page reload. This directly satisfies requirement 2b of the assessment.
+
 ### Soft delete
 
 Employees are never removed from the database. `is_active = false` marks
@@ -79,6 +83,7 @@ App
 └── InsightsPage
     ├── StatCard ×4
     ├── SalaryByCountryTable
+    ├── SalaryByJobTitleTable (country selector)
     ├── DepartmentSummaryTable
     └── TopEarnersTable
 ```

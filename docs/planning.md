@@ -80,6 +80,7 @@ Post-plan additions (based on testing the live app):
 - Server-side column sorting (salary, hire date)
 - Indigo/blue colour theme
 - Email and hire date columns in table
+- "Avg salary by job title in a country" section added to Insights UI (the API endpoint existed from the insights commit; the dashboard section was added here, following the original project's sequence, where this gap was caught during a requirements review)
 
 One commit from the original history — converting PostCSS/Tailwind configs to CommonJS for
 Node 16 — has no equivalent here (Angular's build reads `.postcssrc.json` and Tailwind v4 needs no
