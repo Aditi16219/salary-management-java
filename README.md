@@ -65,14 +65,14 @@ seed\seed.cmd                # Windows
 
 ## Running Tests
 
-**Backend (41 tests)**
+**Backend (51 tests)**
 
 ```bash
 cd backend
 ./mvnw test                  # Windows: mvnw.cmd test
 ```
 
-**Frontend (36 tests)**
+**Frontend (49 tests)**
 
 ```bash
 cd frontend
@@ -87,9 +87,11 @@ npm run test:run
 - Add, view, edit, and delete employees
 - Fields: full name, email, job title, department, country, salary, hire date, employment type
 - Search by name, email, or job title
-- Filter by country and department
+- Filter by country, department, and job title (populated from live data)
+- Sort by salary or hire date (ascending / descending) — server-side across all records
 - Paginated table (20 per page)
 - Soft delete (employees are deactivated, not removed)
+- Color-coded employment type badges (Full Time · Part Time · Contract)
 
 ### Salary Insights Dashboard
 - Global summary: total headcount, avg salary, highest salary, top country
@@ -111,7 +113,7 @@ Base URL: `http://localhost:8000`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/employees` | List employees (paginated, filterable) |
+| GET | `/employees` | List employees (paginated, filterable, sortable) |
 | POST | `/employees` | Create employee |
 | GET | `/employees/{id}` | Get employee |
 | PUT | `/employees/{id}` | Update employee |
@@ -121,6 +123,22 @@ Base URL: `http://localhost:8000`
 | GET | `/insights/headcount-by-country` | Employee count per country |
 | GET | `/insights/department-summary` | Salary stats per department |
 | GET | `/insights/top-earners` | Top N earners |
+| GET | `/meta/countries` | Distinct countries from active employees |
+| GET | `/meta/departments` | Distinct departments from active employees |
+| GET | `/meta/job-titles` | Distinct job titles from active employees |
+
+### Query params for `GET /employees`
+
+| Param | Default | Description |
+|---|---|---|
+| `page` | 1 | Page number |
+| `page_size` | 20 | Results per page (max 100) |
+| `search` | — | Search name, email, or job title |
+| `country` | — | Filter by exact country |
+| `department` | — | Filter by exact department |
+| `job_title` | — | Filter by exact job title |
+| `sort_by` | `full_name` | Column to sort (`salary`, `hire_date`, `full_name`, `country`, `job_title`) |
+| `sort_order` | `asc` | `asc` or `desc` |
 
 Errors are returned as `{"detail": "..."}` with `404`, `409` (duplicate email), or `422` (invalid input).
 
@@ -138,18 +156,18 @@ salary-management-java/
 │   │   ├── dto/             # Request/response records
 │   │   ├── repository/      # Spring Data repository + aggregate queries
 │   │   ├── service/         # Business logic layer
-│   │   ├── controller/      # REST controllers (employees, insights)
+│   │   ├── controller/      # REST controllers (employees, insights, meta)
 │   │   ├── exception/       # {"detail": ...} error handling
 │   │   ├── config/          # CORS + SQLite dialect
 │   │   └── seed/            # Seed data generator + bulk insert
-│   └── src/test/java/       # 41 JUnit tests
+│   └── src/test/java/       # 51 JUnit tests
 ├── frontend/
 │   └── src/app/
 │       ├── api/             # Typed HttpClient services
 │       ├── components/      # Reusable UI components
 │       ├── pages/           # Route-level page components
 │       ├── models/          # TypeScript interfaces
-│       └── **/*.spec.ts     # 36 Jest tests
+│       └── **/*.spec.ts     # 49 Jest tests
 ├── seed/
 │   ├── seed.sh / seed.cmd   # Run the seed (--seed flag)
 │   ├── first_names.txt
