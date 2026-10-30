@@ -31,17 +31,19 @@ import { formatSalary, formatType } from '../../utils/format';
             @for (emp of employees(); track emp.id) {
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium text-gray-900">{{ emp.full_name }}</td>
-                <td class="px-4 py-3 text-gray-600">{{ emp.job_title }}</td>
-                <td class="px-4 py-3 text-gray-600">{{ emp.department }}</td>
-                <td class="px-4 py-3 text-gray-600">{{ emp.country }}</td>
+                <td class="px-4 py-3 text-gray-500 text-xs">{{ emp.email }}</td>
+                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.job_title }}</td>
+                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.department }}</td>
+                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.country }}</td>
                 <td class="px-4 py-3 text-right text-gray-900">{{ formatSalary(emp.salary) }}</td>
                 <td class="px-4 py-3">
                   <span
-                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 whitespace-nowrap"
                   >
                     {{ formatType(emp.employment_type) }}
                   </span>
                 </td>
+                <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ emp.hire_date }}</td>
                 <td class="px-4 py-3">
                   <div class="flex items-center gap-2 justify-end">
                     <button
@@ -71,7 +73,9 @@ import { formatSalary, formatType } from '../../utils/format';
 export class EmployeeTable {
   protected readonly PencilIcon = Pencil;
   protected readonly TrashIcon = Trash2;
-  protected readonly headers = ['Name', 'Job Title', 'Department', 'Country', 'Salary', 'Type', ''];
+  protected readonly headers = [
+    'Name', 'Email', 'Job Title', 'Department', 'Country', 'Salary', 'Type', 'Hire Date', '',
+  ];
   protected readonly formatSalary = formatSalary;
   protected readonly formatType = formatType;
 

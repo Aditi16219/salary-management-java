@@ -52,6 +52,17 @@ describe('EmployeesPage', () => {
     expect(screen.getByText('United States')).toBeInTheDocument();
   });
 
+  it('renders email and hire date columns', async () => {
+    await renderPage();
+    expect(await screen.findByText('jane@example.com')).toBeInTheDocument();
+    expect(screen.getByText('2022-01-15')).toBeInTheDocument();
+
+    const headers = screen.getAllByRole('columnheader').map((h) => h.textContent?.trim());
+    expect(headers).toEqual([
+      'Name', 'Email', 'Job Title', 'Department', 'Country', 'Salary', 'Type', 'Hire Date', '',
+    ]);
+  });
+
   it('shows total employee count', async () => {
     await renderPage();
     expect(await screen.findByText(/1 total employee/i)).toBeInTheDocument();
