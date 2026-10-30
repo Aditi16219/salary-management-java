@@ -18,7 +18,7 @@ A full-stack salary management tool for HR managers. Manage 10,000+ employees, v
 
 ## Demo
 
-📹 **Video demo:** _[Link to be added after recording]_
+📹 **Video demo:** https://www.loom.com/share/fcf9840b02c2400daf0606354ed96b44
 
 The demo covers: employee list with search/filter/sort, add/edit/delete, and the insights dashboard.
 
